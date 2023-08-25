@@ -27,5 +27,8 @@
   },
   "keywords": [],
   "author": "",
-  "licenses": "ISC"
+  "licenses": "ISC",
+  "engines": {
+    "node": ">=16 <18"
+  }
 }
