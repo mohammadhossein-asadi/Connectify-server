@@ -16,7 +16,7 @@ export const register = async (req, res) => {
       occupation,
     } = req.body;
 
-    const salt = await bcrypt.genSalt();
+    const salt = await bcrypt.genSalt(12);
     const passwordHash = await bcrypt.hash(password, salt);
 
     const newUser = new User({
@@ -32,7 +32,8 @@ export const register = async (req, res) => {
       impressions: Math.floor(Math.random() * 10000),
     });
     const savedUser = await newUser.save();
-    res.status(201).json(savedUser);
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+    res.status(201).json({ savedUser, token });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
