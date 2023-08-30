@@ -32,5 +32,5 @@ To set up the Connectify Social Media back-end on your local machine, follow the
 - Install dependencies using yarn install.
 - Configure environment variables for MongoDB connection, JWT secret, etc.
 - Run the server with yarn start or yarn dev.
-Conclusion
+# Conclusion
 The Connectify Social Media back-end provides the necessary infrastructure to support user interactions, content sharing, and community engagement. Through the use of Express, Mongoose, JWT, and other technologies, it ensures secure and efficient data management while enabling the front-end to deliver a seamless user experience.
