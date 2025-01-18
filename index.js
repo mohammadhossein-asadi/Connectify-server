@@ -163,6 +163,28 @@ app.use((err, req, res, next) => {
   });
 });
 
+app.use((err, req, res, next) => {
+  console.error("Error:", {
+    method: req.method,
+    url: req.url,
+    body: req.body,
+    error: err.message,
+    stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
+  });
+
+  if (err.message.includes("CORS")) {
+    return res.status(403).json({
+      error: "CORS Error",
+      message: "Origin not allowed",
+      allowedOrigins: process.env.CORS_ALLOWED_ORIGINS?.split(","),
+    });
+  }
+
+  res.status(err.status || 500).json({
+    error: err.message || "Internal Server Error",
+  });
+});
+
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 6001;
 mongoose.set("debug", process.env.NODE_ENV === "development");
