@@ -43,26 +43,35 @@ app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(performanceMiddleware);
 
-// CORS configuration
-app.use(
-  cors({
-    origin: true, // Allow all origins in development
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-      "Origin",
-      "X-Requested-With",
-      "Accept",
-    ],
-    exposedHeaders: ["Authorization"],
-    maxAge: 86400, // Cache preflight requests for 24 hours
-  })
-);
+// CORS configuration - Move this before all other middleware
+app.use((req, res, next) => {
+  const allowedOrigins = [
+    "https://connectifysocial.vercel.app",
+    "http://localhost:3000",
+    "http://localhost:5173",
+  ];
+  const origin = req.headers.origin;
 
-// Remove any duplicate CORS middleware
-app.options("*", cors()); // Handle preflight requests
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, X-Requested-With"
+  );
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  next();
+});
 
 // Security
 app.use(
