@@ -1,3 +1,5 @@
+const API_BASE_URL = "https://connectify-server-six.vercel.app";
+
 const fetchWithTimeout = async (url, options = {}) => {
   const { timeout = 5000, ...fetchOptions } = options;
 
@@ -9,28 +11,21 @@ const fetchWithTimeout = async (url, options = {}) => {
     Accept: "application/json",
   };
 
-  // Add auth token if it exists
-  const token = localStorage.getItem("token");
-  if (token) {
-    defaultHeaders.Authorization = `Bearer ${token}`;
-  }
-
   const finalOptions = {
     ...fetchOptions,
     headers: {
       ...defaultHeaders,
       ...fetchOptions.headers,
     },
-    credentials: "include",
-    signal: controller.signal,
     mode: "cors",
+    credentials: "omit",
+    signal: controller.signal,
   };
 
   try {
-    const response = await fetch(url, finalOptions);
+    const response = await fetch(`${API_BASE_URL}${url}`, finalOptions);
     clearTimeout(id);
 
-    // Handle CORS errors
     if (!response.ok) {
       const error = new Error(response.statusText);
       error.response = response;
@@ -45,23 +40,15 @@ const fetchWithTimeout = async (url, options = {}) => {
   }
 };
 
-// Add retry logic
-const retryFetch = async (url, options, retries = 3) => {
+export const login = async (credentials) => {
   try {
-    return await fetchWithTimeout(url, options);
+    const response = await fetchWithTimeout("/auth/login", {
+      method: "POST",
+      body: JSON.stringify(credentials),
+    });
+    return response.json();
   } catch (error) {
-    if (retries > 0) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      return retryFetch(url, options, retries - 1);
-    }
+    console.error("Login error:", error);
     throw error;
   }
-};
-
-export const login = async (credentials) => {
-  const response = await retryFetch("/auth/login", {
-    method: "POST",
-    body: JSON.stringify(credentials),
-  });
-  return response.json();
 };
