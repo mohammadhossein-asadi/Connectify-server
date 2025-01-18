@@ -26,13 +26,28 @@ import { cacheMiddleware } from "./middleware/cache.js";
 import { authLimiter, apiLimiter } from "./middleware/rateLimiter.js";
 import { performanceMiddleware } from "./middleware/performance.js";
 import { validatePost } from "./middleware/validator.js";
-import { initErrorTracking } from "./utils/errorHandler.js";
+
+// Initialize error tracking if Sentry is configured
+const initErrorTracking = async () => {
+  if (process.env.SENTRY_DSN) {
+    const Sentry = await import("@sentry/node");
+    Sentry.init({
+      dsn: process.env.SENTRY_DSN,
+      environment: process.env.NODE_ENV,
+      tracesSampleRate: 1.0,
+    });
+  }
+};
 
 /* CONFIGURATIONS */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config();
-initErrorTracking();
+
+// Only initialize error tracking if SENTRY_DSN is provided
+if (process.env.SENTRY_DSN) {
+  initErrorTracking();
+}
 
 const app = express();
 
@@ -45,26 +60,17 @@ app.use(performanceMiddleware);
 
 // CORS configuration - Must be first middleware
 app.use((req, res, next) => {
-  // Allow all origins in development
   res.header("Access-Control-Allow-Origin", "*");
-
-  // Allow specific methods
   res.header(
     "Access-Control-Allow-Methods",
     "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS"
   );
-
-  // Allow all headers
   res.header("Access-Control-Allow-Headers", "*");
-
-  // Cache preflight for 24 hours
   res.header("Access-Control-Max-Age", "86400");
 
-  // Handle preflight
   if (req.method === "OPTIONS") {
     return res.status(204).end();
   }
-
   next();
 });
 
@@ -72,7 +78,7 @@ app.use((req, res, next) => {
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
-    crossOriginOpenerPolicy: { policy: "same-origin" },
+    crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
     contentSecurityPolicy: false,
   })
 );
@@ -148,20 +154,6 @@ app.use((err, req, res, next) => {
   console.error("Error:", {
     method: req.method,
     url: req.url,
-    error: err.message,
-    stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
-  });
-
-  res.status(err.status || 500).json({
-    message: err.message || "Internal server error",
-    ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
-  });
-});
-
-app.use((err, req, res, next) => {
-  console.error("Error:", {
-    method: req.method,
-    url: req.url,
     body: req.body,
     error: err.message,
     stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
@@ -171,7 +163,6 @@ app.use((err, req, res, next) => {
     return res.status(403).json({
       error: "CORS Error",
       message: "Origin not allowed",
-      allowedOrigins: process.env.CORS_ALLOWED_ORIGINS?.split(","),
     });
   }
 

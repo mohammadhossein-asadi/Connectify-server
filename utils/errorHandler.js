@@ -10,9 +10,9 @@ export const initErrorTracking = () => {
   }
 };
 
-export const captureError = (error, context = {}) => {
-  console.error(error);
+export const captureError = (error) => {
+  console.error("Error:", error);
   if (process.env.SENTRY_DSN) {
-    Sentry.captureException(error, { extra: context });
+    Sentry.captureException(error);
   }
 };
