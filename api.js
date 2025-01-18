@@ -27,7 +27,8 @@ const fetchWithTimeout = async (url, options = {}) => {
     clearTimeout(id);
 
     if (!response.ok) {
-      const error = new Error(response.statusText);
+      const errorData = await response.json().catch(() => ({}));
+      const error = new Error(errorData.message || response.statusText);
       error.response = response;
       throw error;
     }

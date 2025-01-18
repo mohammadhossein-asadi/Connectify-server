@@ -43,20 +43,26 @@ app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(performanceMiddleware);
 
-// CORS configuration - Move this before all other middleware
+// CORS configuration - Must be first middleware
 app.use((req, res, next) => {
+  // Allow all origins in development
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+
+  // Allow specific methods
   res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+    "Access-Control-Allow-Methods",
+    "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS"
   );
-  res.header("Access-Control-Allow-Credentials", "true");
+
+  // Allow all headers
+  res.header("Access-Control-Allow-Headers", "*");
+
+  // Cache preflight for 24 hours
+  res.header("Access-Control-Max-Age", "86400");
 
   // Handle preflight
   if (req.method === "OPTIONS") {
-    res.status(200).end();
-    return;
+    return res.status(204).end();
   }
 
   next();
