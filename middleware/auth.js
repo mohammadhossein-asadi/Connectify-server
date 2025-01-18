@@ -2,20 +2,47 @@ import jwt from "jsonwebtoken";
 
 export const verifyToken = async (req, res, next) => {
   try {
-    let token = req.header("Authorization");
+    // Always allow OPTIONS requests
+    if (req.method === "OPTIONS") {
+      return next();
+    }
+
+    // List of paths that don't require authentication
+    const unprotectedPaths = [
+      "/auth/login",
+      "/auth/register",
+      "/health",
+      "/test",
+    ];
+
+    if (unprotectedPaths.includes(req.path)) {
+      return next();
+    }
+
+    const token = req.headers.authorization?.replace("Bearer ", "");
 
     if (!token) {
-      return res.status(403).send("Access Denied");
+      return res.status(401).json({
+        message: "No authentication token",
+        path: req.path,
+        method: req.method,
+      });
     }
 
-    if (token.startsWith("Bearer ")) {
-      token = token.slice(7, token.length).trimLeft();
+    try {
+      const verified = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = verified;
+      next();
+    } catch (err) {
+      console.error("Token verification failed:", {
+        error: err.message,
+        path: req.path,
+        token: token.substring(0, 10) + "...", // Log part of token for debugging
+      });
+      return res.status(401).json({ message: "Invalid token" });
     }
-
-    const verified = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = verified;
-    next();
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Auth middleware error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };

@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 const postSchema = new mongoose.Schema(
   {
     userId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
     firstName: {
@@ -15,21 +16,46 @@ const postSchema = new mongoose.Schema(
       required: true,
     },
     location: String,
-    description: String,
+    description: {
+      type: String,
+      trim: true,
+    },
     picturePath: String,
     userPicturePath: String,
     likes: {
       type: Map,
       of: Boolean,
+      default: new Map(),
     },
-    comments: {
-      type: Array,
-      default: [],
-    },
+    comments: [
+      {
+        userId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        text: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
 );
 
-const Post = mongoose.model("Post", postSchema);
+// Indexes for better query performance
+postSchema.index({ userId: 1, createdAt: -1 });
+postSchema.index({ createdAt: -1 });
 
+const Post = mongoose.model("Post", postSchema);
 export default Post;
