@@ -1,5 +1,6 @@
 const fetchPosts = async () => {
   const token = localStorage.getItem("token");
+  console.log("Token retrieved:", token); // Log the token to check its value
   try {
     const response = await fetch("https://connectify-dn5y.onrender.com/posts", {
       method: "GET",

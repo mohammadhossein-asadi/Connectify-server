@@ -7,18 +7,6 @@ export const verifyToken = async (req, res, next) => {
       return next();
     }
 
-    // List of paths that don't require authentication
-    const unprotectedPaths = [
-      "/auth/login",
-      "/auth/register",
-      "/health",
-      "/test",
-    ];
-
-    if (unprotectedPaths.includes(req.path)) {
-      return next();
-    }
-
     const token = req.headers.authorization?.replace("Bearer ", "");
 
     if (!token) {

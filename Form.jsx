@@ -19,7 +19,9 @@ const login = async (credentials) => {
       );
     }
 
-    return await response.json(); // Return the user data
+    const data = await response.json();
+    console.log("Login successful:", data); // Log the response
+    return data; // Return the user data
   } catch (error) {
     console.error("Login error:", error);
     throw error;
@@ -34,6 +36,8 @@ const handleFormSubmit = async (values, onSubmitProps) => {
     });
     onSubmitProps.resetForm();
     if (loggedIn) {
+      // Store the token in localStorage
+      localStorage.setItem("token", loggedIn.token);
       dispatch(setLogin(loggedIn));
       navigate("/home");
     }
