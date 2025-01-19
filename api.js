@@ -1,7 +1,4 @@
-const API_BASE_URL =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:5173 " // Update this to your local backend port
-    : "https://connectify-server-six.vercel.app";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const fetchWithTimeout = async (url, options = {}) => {
   const { timeout = 5000, ...fetchOptions } = options;
@@ -21,7 +18,7 @@ const fetchWithTimeout = async (url, options = {}) => {
       ...fetchOptions.headers,
     },
     mode: "cors",
-    credentials: "include", // Changed from 'omit' to 'include'
+    credentials: "include",
     signal: controller.signal,
   };
 

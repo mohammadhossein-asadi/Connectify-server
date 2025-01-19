@@ -61,8 +61,10 @@ app.use(performanceMiddleware);
 // CORS configuration - Must be first middleware
 app.use((req, res, next) => {
   const allowedOrigins = [
-    "http://localhost:5173", // Local development
-    "https://connectify-client.vercel.app", // Production frontend (update this)
+    "http://localhost:5173", // Local development frontend
+    "http://localhost:3001", // Local development backend
+    "https://connectifysocial.vercel.app", // Production frontend
+    "https://connectify-client.vercel.app", // Alternative production frontend
   ];
 
   const origin = req.headers.origin;
@@ -74,10 +76,7 @@ app.use((req, res, next) => {
     "Access-Control-Allow-Methods",
     "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS"
   );
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization, Accept"
-  );
+  res.header("Access-Control-Allow-Headers", "*");
   res.header("Access-Control-Allow-Credentials", "true");
   res.header("Access-Control-Max-Age", "86400");
 
