@@ -174,6 +174,9 @@ app.use((req, res, next) => {
   next();
 });
 
+// Add this line to trust the proxy
+app.set("trust proxy", true);
+
 /* ERROR HANDLING */
 app.use((err, req, res, next) => {
   console.error("Error:", {

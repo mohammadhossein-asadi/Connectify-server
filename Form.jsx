@@ -1,14 +1,17 @@
-const login = async (values) => {
+const login = async (credentials) => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-      mode: "cors",
-      credentials: "include",
-    });
+    const response = await fetch(
+      "https://connectify-dn5y.onrender.com/auth/login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(credentials),
+        mode: "cors",
+        credentials: "include",
+      }
+    );
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
