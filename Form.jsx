@@ -30,7 +30,10 @@ const login = async (credentials) => {
 
 const handleFormSubmit = async (values, onSubmitProps) => {
   try {
-    const loggedIn = await login(values);
+    const loggedIn = await login({
+      email: values.email,
+      password: values.password,
+    });
     onSubmitProps.resetForm();
     if (loggedIn) {
       dispatch(setLogin(loggedIn));
