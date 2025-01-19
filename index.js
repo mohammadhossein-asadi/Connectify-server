@@ -29,7 +29,23 @@ app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://connectify-server-lzjj.onrender.com",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    credentials: true,
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Accept",
+      "Origin",
+      "X-Requested-With",
+    ],
+  })
+);
 app.use("/assets", express.static(path.join(__dirname, "public/assets")));
 
 /* FILE STORAGE */
