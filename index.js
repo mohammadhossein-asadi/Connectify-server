@@ -61,7 +61,7 @@ app.use(performanceMiddleware);
 // CORS configuration - Must be first middleware
 const corsOptions = {
   origin: function (origin, callback) {
-    const allowedOrigins = [
+    const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS?.split(",") || [
       "http://localhost:5173",
       "http://localhost:3001",
       "https://connectifysocial.vercel.app",
@@ -69,7 +69,9 @@ const corsOptions = {
     ];
 
     // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
+    if (!origin || process.env.NODE_ENV === "development") {
+      return callback(null, true);
+    }
 
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
@@ -79,7 +81,9 @@ const corsOptions = {
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "Accept"],
+  allowedHeaders: ["Content-Type", "Authorization", "Accept", "Origin"],
+  exposedHeaders: ["Content-Length", "Content-Type"],
+  maxAge: 86400,
   optionsSuccessStatus: 204,
 };
 
