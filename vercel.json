@@ -27,7 +27,7 @@
         },
         {
           "key": "Access-Control-Allow-Headers",
-          "value": "Content-Type, Authorization, Accept, Origin, Access-Control-Allow-Credentials, Access-Control-Allow-Origin, X-Requested-With"
+          "value": "Content-Type,Authorization,Accept,Origin,Access-Control-Allow-Origin,Access-Control-Allow-Credentials,Access-Control-Allow-Headers,Access-Control-Allow-Methods,X-Requested-With"
         }
       ]
     }

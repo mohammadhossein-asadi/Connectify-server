@@ -11,7 +11,6 @@ const fetchWithTimeout = async (url, options = {}) => {
     "Content-Type": "application/json",
     Accept: "application/json",
     Origin: CLIENT_URL,
-    "Access-Control-Allow-Credentials": "true",
   };
 
   const finalOptions = {
@@ -42,7 +41,6 @@ const fetchWithTimeout = async (url, options = {}) => {
     if (error.name === "AbortError") {
       throw new Error("Request timeout");
     }
-    console.error("API Error:", error);
     throw error;
   }
 };

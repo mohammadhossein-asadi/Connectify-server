@@ -68,7 +68,6 @@ const corsOptions = {
       "https://connectify-client.vercel.app",
     ];
 
-    // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin || process.env.NODE_ENV === "development") {
       return callback(null, true);
     }
@@ -86,8 +85,10 @@ const corsOptions = {
     "Authorization",
     "Accept",
     "Origin",
-    "Access-Control-Allow-Credentials",
     "Access-Control-Allow-Origin",
+    "Access-Control-Allow-Credentials",
+    "Access-Control-Allow-Headers",
+    "Access-Control-Allow-Methods",
     "X-Requested-With",
   ],
   exposedHeaders: ["Content-Length", "Content-Type"],
@@ -97,12 +98,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
-// Add additional CORS headers for preflight
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Credentials", "true");
-  next();
-});
 
 // Security
 app.use(
