@@ -1,4 +1,5 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL;
+const CLIENT_URL = import.meta.env.VITE_CLIENT_URL;
 
 const fetchWithTimeout = async (url, options = {}) => {
   const { timeout = 5000, ...fetchOptions } = options;
@@ -9,6 +10,7 @@ const fetchWithTimeout = async (url, options = {}) => {
   const defaultHeaders = {
     "Content-Type": "application/json",
     Accept: "application/json",
+    Origin: CLIENT_URL,
   };
 
   const finalOptions = {
@@ -39,7 +41,7 @@ const fetchWithTimeout = async (url, options = {}) => {
     if (error.name === "AbortError") {
       throw new Error("Request timeout");
     }
-    console.error("Fetch error:", error);
+    console.error("API Error:", error);
     throw error;
   }
 };
