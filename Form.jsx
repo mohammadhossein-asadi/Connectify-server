@@ -8,7 +8,6 @@ const login = async (credentials) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(credentials),
-        mode: "cors",
         credentials: "include",
       }
     );
@@ -20,8 +19,7 @@ const login = async (credentials) => {
       );
     }
 
-    const data = await response.json();
-    return data;
+    return await response.json(); // Return the user data
   } catch (error) {
     console.error("Login error:", error);
     throw error;
