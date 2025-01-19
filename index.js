@@ -52,6 +52,11 @@ app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/posts", postRoutes);
 
+/* Add this after your other routes */
+app.get("/", (req, res) => {
+  res.json({ message: "Welcome to Connectify API" });
+});
+
 /* MONGOOSE SETUP */
 mongoose.set("strictQuery", false);
 
