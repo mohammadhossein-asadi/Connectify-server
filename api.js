@@ -36,6 +36,9 @@ const fetchWithTimeout = async (url, options = {}) => {
     return response;
   } catch (error) {
     clearTimeout(id);
+    if (error.name === "AbortError") {
+      throw new Error("Request timeout");
+    }
     console.error("Fetch error:", error);
     throw error;
   }

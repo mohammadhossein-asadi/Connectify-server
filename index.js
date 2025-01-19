@@ -59,34 +59,31 @@ app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(performanceMiddleware);
 
 // CORS configuration - Must be first middleware
-app.use((req, res, next) => {
-  const allowedOrigins = [
-    "http://localhost:5173", // Local development frontend
-    "http://localhost:3001", // Local development backend
-    "https://connectifysocial.vercel.app", // Production frontend
-    "https://connectify-client.vercel.app", // Alternative production frontend
-  ];
+const corsOptions = {
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      "http://localhost:5173",
+      "http://localhost:3001",
+      "https://connectifysocial.vercel.app",
+      "https://connectify-client.vercel.app",
+    ];
 
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
-  }
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
 
-  res.header(
-    "Access-Control-Allow-Methods",
-    "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS"
-  );
-  res.header("Access-Control-Allow-Headers", "*");
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header("Access-Control-Max-Age", "86400");
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "Accept"],
+  optionsSuccessStatus: 204,
+};
 
-  // Handle preflight
-  if (req.method === "OPTIONS") {
-    return res.status(204).end();
-  }
-
-  next();
-});
+app.use(cors(corsOptions));
 
 // Security
 app.use(
