@@ -42,20 +42,27 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log("Login attempt for:", email); // Debug log
+
     const user = await User.findOne({ email: email });
-    if (!user) return res.status(400).json({ msg: "User does not exist. " });
+    if (!user) {
+      console.log("User not found"); // Debug log
+      return res.status(400).json({ msg: "User does not exist. " });
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ msg: "Invalid credentials. " });
+    if (!isMatch) {
+      console.log("Password mismatch"); // Debug log
+      return res.status(400).json({ msg: "Invalid credentials. " });
+    }
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-
-    // Convert to plain object and remove password
     const userWithoutPassword = user.toObject();
     delete userWithoutPassword.password;
 
     res.status(200).json({ token, user: userWithoutPassword });
   } catch (err) {
+    console.error("Login error:", err); // Detailed error log
     res.status(500).json({ error: err.message });
   }
 };
