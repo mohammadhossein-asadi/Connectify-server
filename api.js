@@ -11,6 +11,7 @@ const fetchWithTimeout = async (url, options = {}) => {
     "Content-Type": "application/json",
     Accept: "application/json",
     Origin: CLIENT_URL,
+    "Access-Control-Allow-Credentials": "true",
   };
 
   const finalOptions = {

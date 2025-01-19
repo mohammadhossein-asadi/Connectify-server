@@ -81,13 +81,28 @@ const corsOptions = {
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "Accept", "Origin"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "Accept",
+    "Origin",
+    "Access-Control-Allow-Credentials",
+    "Access-Control-Allow-Origin",
+    "X-Requested-With",
+  ],
   exposedHeaders: ["Content-Length", "Content-Type"],
   maxAge: 86400,
   optionsSuccessStatus: 204,
+  preflightContinue: false,
 };
 
 app.use(cors(corsOptions));
+
+// Add additional CORS headers for preflight
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Credentials", "true");
+  next();
+});
 
 // Security
 app.use(

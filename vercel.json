@@ -12,6 +12,26 @@
       "dest": "index.js"
     }
   ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Credentials", "value": "true" },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://connectifysocial.vercel.app"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET,POST,PUT,DELETE,PATCH,OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization, Accept, Origin, Access-Control-Allow-Credentials, Access-Control-Allow-Origin, X-Requested-With"
+        }
+      ]
+    }
+  ],
   "env": {
     "CORS_ALLOWED_ORIGINS": "https://connectifysocial.vercel.app",
     "NODE_ENV": "production"
