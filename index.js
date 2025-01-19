@@ -34,6 +34,7 @@ app.use(
     origin: [
       "http://localhost:5173",
       "https://connectify-server-lzjj.onrender.com",
+      "https://connectifysocial.vercel.app",
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
