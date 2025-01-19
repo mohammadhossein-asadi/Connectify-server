@@ -1,11 +1,11 @@
 const fetchPosts = async () => {
   const token = localStorage.getItem("token");
-  console.log("Token retrieved:", token); // Log the token to check its value
+  console.log("Token retrieved:", token); // Check if token is null or undefined
   try {
     const response = await fetch("https://connectify-dn5y.onrender.com/posts", {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`, // Ensure token is valid
         "Content-Type": "application/json",
       },
     });
