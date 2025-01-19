@@ -27,27 +27,10 @@ import { authLimiter, apiLimiter } from "./middleware/rateLimiter.js";
 import { performanceMiddleware } from "./middleware/performance.js";
 import { validatePost } from "./middleware/validator.js";
 
-// Initialize error tracking if Sentry is configured
-const initErrorTracking = async () => {
-  if (process.env.SENTRY_DSN) {
-    const Sentry = await import("@sentry/node");
-    Sentry.init({
-      dsn: process.env.SENTRY_DSN,
-      environment: process.env.NODE_ENV,
-      tracesSampleRate: 1.0,
-    });
-  }
-};
-
 /* CONFIGURATIONS */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config();
-
-// Only initialize error tracking if SENTRY_DSN is provided
-if (process.env.SENTRY_DSN) {
-  initErrorTracking();
-}
 
 const app = express();
 
