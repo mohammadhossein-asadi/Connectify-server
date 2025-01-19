@@ -20,6 +20,8 @@ app.use(
   cors({
     origin: process.env.CORS_ALLOWED_ORIGINS?.split(",") || "*",
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
@@ -30,6 +32,17 @@ app.get("/", (req, res) => {
 
 app.use("/auth", authRoutes);
 app.use("/posts", postRoutes);
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: "Something went wrong!" });
+});
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
+});
 
 // MongoDB connection
 const connectDB = async () => {
