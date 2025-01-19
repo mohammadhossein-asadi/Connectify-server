@@ -2,36 +2,20 @@ import jwt from "jsonwebtoken";
 
 export const verifyToken = async (req, res, next) => {
   try {
-    // Always allow OPTIONS requests
-    if (req.method === "OPTIONS") {
-      return next();
-    }
-
-    let token = req.headers.authorization;
+    let token = req.header("Authorization");
 
     if (!token) {
-      return res.status(401).json({ message: "No authentication token" });
+      return res.status(403).send("Access Denied");
     }
 
-    // Properly handle "Bearer " prefix
     if (token.startsWith("Bearer ")) {
-      token = token.slice(7);
+      token = token.slice(7, token.length).trimLeft();
     }
 
-    if (!token.trim()) {
-      return res.status(401).json({ message: "Invalid token format" });
-    }
-
-    try {
-      const verified = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = verified;
-      next();
-    } catch (jwtError) {
-      console.error("JWT verification failed:", jwtError);
-      return res.status(401).json({ message: "Invalid or expired token" });
-    }
+    const verified = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = verified;
+    next();
   } catch (err) {
-    console.error("Auth middleware error:", err);
-    return res.status(500).json({ message: "Server error" });
+    res.status(500).json({ error: err.message });
   }
 };

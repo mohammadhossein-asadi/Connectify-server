@@ -1,40 +1,29 @@
 {
   "name": "server",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "type": "module",
-  "license": "MIT",
-  "engines": {
-    "node": ">=16"
-  },
   "dependencies": {
-    "@sentry/node": "^7.91.0",
-    "bcrypt": "5.1.0",
-    "body-parser": "1.20.2",
-    "cors": "2.8.5",
-    "dotenv": "16.3.1",
-    "express": "4.18.2",
-    "express-rate-limit": "7.1.5",
-    "express-validator": "7.0.1",
-    "helmet": "7.0.0",
-    "jsonwebtoken": "9.0.1",
-    "mongoose": "7.4.2",
-    "morgan": "1.10.0",
-    "multer": "1.4.5-lts.1",
-    "node-cache": "5.1.2"
+    "bcrypt": "^5.1.0",
+    "body-parser": "^1.20.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "gridfs-stream": "^1.1.1",
+    "helmet": "^6.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.7.0",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "multer-gridfs-storage": "^5.0.2"
   },
-  "devDependencies": {
-    "nodemon": "3.0.1"
-  },
+  "devDependencies": {},
   "scripts": {
-    "start": "node index.js",
-    "dev": "node scripts/checkSetup.js && nodemon --ignore 'public/*' index.js",
-    "clean": "rm -rf node_modules package-lock.json yarn.lock",
-    "migrate": "node scripts/migrate.js",
-    "cleanup": "node scripts/cleanup.js",
-    "setup": "node scripts/checkSetup.js",
-    "reset": "yarn clean && yarn install && yarn setup && yarn migrate",
-    "lint": "eslint . --fix",
-    "test": "jest"
-  }
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
