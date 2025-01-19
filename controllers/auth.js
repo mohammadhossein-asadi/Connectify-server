@@ -58,6 +58,7 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
     if (!email || !password) {
       return res
         .status(400)
@@ -69,23 +70,24 @@ export const login = async (req, res) => {
       .lean();
 
     if (!user) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
     delete user.password;
 
+    // Create token with consistent format
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
 
     res.status(200).json({
-      user,
       token,
+      user,
       expiresIn: 7 * 24 * 60 * 60 * 1000,
     });
   } catch (err) {

@@ -20,8 +20,15 @@ const login = async (credentials) => {
     }
 
     const data = await response.json();
-    console.log("Login successful:", data); // Log the response
-    return data; // Return the user data
+
+    // Ensure token exists before storing
+    if (!data.token) {
+      throw new Error("No token received from server");
+    }
+
+    // Store token with Bearer prefix
+    localStorage.setItem("token", `Bearer ${data.token}`);
+    return data;
   } catch (error) {
     console.error("Login error:", error);
     throw error;
