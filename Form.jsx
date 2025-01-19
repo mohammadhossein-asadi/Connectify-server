@@ -37,15 +37,13 @@ const login = async (credentials) => {
 
 const handleFormSubmit = async (values, onSubmitProps) => {
   try {
-    console.log("Submitting login with values:", values); // Log the values being submitted
+    console.log("Submitting login with values:", values);
     const loggedIn = await login({
       email: values.email,
       password: values.password,
     });
     onSubmitProps.resetForm();
     if (loggedIn) {
-      // Store the token in localStorage
-      localStorage.setItem("token", loggedIn.token);
       dispatch(setLogin(loggedIn));
       navigate("/home");
     }
