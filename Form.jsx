@@ -1,17 +1,14 @@
 const login = async (values) => {
   try {
-    const response = await fetch(
-      "https://connectify-server-six.vercel.app/auth/login",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-        mode: "cors",
-        credentials: "omit",
-      }
-    );
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+      mode: "cors",
+      credentials: "include",
+    });
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
